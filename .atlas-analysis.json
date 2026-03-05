@@ -1,0 +1,44 @@
+{
+  "projectType": "frontend",
+  "projectName": "Taskflow",
+  "projectDescription": "A simple task management application with priority filtering, categories, and dark mode support",
+  "theme": "almond",
+  "primaryColor": "#848c8e",
+  "lightColor": "#11161e",
+  "darkColor": "#cfd0d2",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": ["introduction", "quickstart"]
+      },
+      {
+        "group": "Features",
+        "pages": ["features/task-management", "features/priority-system", "features/categories", "features/dark-mode", "features/local-storage"]
+      },
+      {
+        "group": "User Guide",
+        "pages": ["guide/creating-tasks", "guide/filtering-tasks", "guide/searching-tasks", "guide/completing-tasks"]
+      },
+      {
+        "group": "Technical Reference",
+        "pages": ["technical/architecture", "technical/styling", "technical/storage"]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Priority-based task organization (High, Medium, Low)",
+    "Task categorization and filtering",
+    "Real-time search functionality",
+    "Dark/Light mode toggle",
+    "Persistent storage using localStorage",
+    "Responsive design with Tailwind CSS"
+  ],
+  "publicApiSurface": [
+    "guardarEnStorage() - Saves tasks to localStorage",
+    "actualizarContadores() - Updates task counters for each priority section",
+    "crearTareaElemento(t) - Creates a DOM element for a task",
+    "aplicarTema(oscuro) - Applies dark or light theme",
+    "cargarTareas() - Loads tasks from localStorage or default data"
+  ]
+}
