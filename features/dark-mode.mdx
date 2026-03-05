@@ -1,0 +1,177 @@
+---
+title: Dark Mode
+description: Toggle between light and dark themes with automatic preference persistence
+---
+
+## Overview
+
+Taskflow includes a fully-featured dark mode that transforms the entire interface with a carefully designed color palette. User theme preferences are automatically saved and restored across sessions.
+
+## Theme Toggle Function
+
+The `aplicarTema()` function handles theme switching and persistence:
+
+```javascript app.js
+function aplicarTema(oscuro) {
+    document.documentElement.classList.toggle('dark', oscuro);
+    btnTema.textContent = oscuro ? '🌙' : '☀️';
+    localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+}
+```
+
+This function:
+1. Toggles the `dark` class on the root HTML element
+2. Updates the theme button icon (moon for dark, sun for light)
+3. Saves the preference to localStorage
+
+<Info>
+  Tailwind CSS's `dark:` variant system automatically applies dark mode styles when the `dark` class is present on the document element.
+</Info>
+
+## Loading Saved Theme
+
+On page load, the application restores the user's previous theme preference:
+
+```javascript app.js
+aplicarTema(localStorage.getItem('tema') === 'dark');
+```
+
+<Note>
+  If no theme preference is saved, the application defaults to light mode.
+</Note>
+
+## Toggle Button
+
+The theme toggle button is positioned in the header with a clean, accessible design:
+
+```html index.html
+<button id="btnTema"
+  class="absolute right-0 text-xl w-9 h-9 flex items-center justify-center rounded-lg
+         bg-gray-100 dark:bg-[#1a1a2e] hover:bg-gray-200 dark:hover:bg-[#0f3460] transition-all duration-200">
+  🌙
+</button>
+```
+
+The button includes:
+- Absolute positioning in the header
+- Different background colors for light and dark modes
+- Smooth hover transitions
+- Icon that changes based on current theme
+
+## Toggle Event Listener
+
+Clicking the button toggles between themes:
+
+```javascript app.js
+btnTema.addEventListener('click', function() {
+    aplicarTema(!document.documentElement.classList.contains('dark'));
+});
+```
+
+## Tailwind Dark Mode Configuration
+
+Dark mode is enabled using Tailwind's class-based strategy:
+
+```javascript tailwind.config.js
+module.exports = {
+  darkMode: 'class',  // Enables class-based dark mode
+  content: ['./*.html', './*.js'],
+  theme: {
+    extend: {
+      colors: {
+        accent: '#7a9cff',
+        alta:   '#ff4757',
+        media:  '#ffa502',
+        baja:   '#2ed573',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+<Tip>
+  The `darkMode: 'class'` setting tells Tailwind to apply dark mode styles when a `dark` class is present on a parent element.
+</Tip>
+
+## Dark Mode Styles
+
+### Body Background
+
+The main body adapts its background and text color:
+
+```html index.html
+<body class="bg-gray-100 dark:bg-[#1a1a2e] text-gray-800 dark:text-white min-h-screen font-sans">
+```
+
+### Header
+
+```html index.html
+<header class="bg-white dark:bg-[#243656] border-b border-gray-200 dark:border-[#2a4a7f] px-8 py-5">
+```
+
+### Sidebar
+
+```html index.html
+<aside class="w-[200px] shrink-0 bg-white dark:bg-[#243656] border-2 border-[#7a9cff] rounded-xl mt-5 mr-4 mb-5 p-5 h-fit">
+```
+
+### Form Inputs
+
+```html index.html
+<input type="text" id="inputTarea" placeholder="Nueva tarea"
+  class="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-[#2a4a7f]
+         bg-white dark:bg-[#243656] text-gray-800 dark:text-white text-sm
+         placeholder-gray-400 dark:placeholder-[#aaaaaa] outline-none
+         focus:border-[#7a9cff] hover:border-[#7a9cff]/50 transition-all duration-200"/>
+```
+
+## Custom CSS Dark Mode Rules
+
+Task cards also include dark mode styling:
+
+```css input.css
+.dark .tarea { background: #243656; border-color: #2a4a7f; }
+.dark .tarea:hover { background: #1e2a4a; border-color: #7a9cff; }
+.dark .nombre { color: #ffffff; }
+.dark .categoria { color: #aaaaaa; }
+.dark .btnEliminar { color: #aaaaaa; }
+.dark .active { background: #0f3460 !important; color: #7a9cff !important; }
+```
+
+## Color Palette
+
+### Light Mode
+- Background: `#f3f4f6` (gray-100)
+- Cards: `#ffffff` (white)
+- Text: `#1f2937` (gray-800)
+- Borders: `#e5e7eb` (gray-200)
+
+### Dark Mode
+- Background: `#1a1a2e` (dark navy)
+- Cards: `#243656` (midnight blue)
+- Text: `#ffffff` (white)
+- Borders: `#2a4a7f` (muted blue)
+- Hover: `#0f3460` (deep blue)
+
+<Note>
+  All colors include smooth transitions for a polished theme-switching experience.
+</Note>
+
+## LocalStorage Persistence
+
+The theme preference is stored with the key `tema`:
+
+```javascript
+localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+```
+
+Values:
+- `'dark'` - Dark mode enabled
+- `'light'` - Light mode enabled (or null for default)
+
+## Related Features
+
+- [Local Storage](/features/local-storage) - How preferences are persisted
+- [Priority System](/features/priority-system) - Priority colors adapt to theme
+- [Task Management](/features/task-management) - All task UI elements support dark mode

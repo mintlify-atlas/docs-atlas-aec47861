@@ -1,0 +1,304 @@
+---
+title: Styling System
+description: CSS architecture using TailwindCSS utilities and custom task styles
+---
+
+## Overview
+
+Taskflow uses **TailwindCSS** for utility-first styling combined with custom CSS for task-specific components. The styling system supports:
+
+- 🎨 Utility-first approach with Tailwind classes
+- 🌙 Dark mode with `class` strategy
+- 🎯 Custom task component styles
+- 📱 Responsive design for mobile devices
+- ✨ Smooth animations and transitions
+
+## TailwindCSS Integration
+
+### Installation
+
+Tailwind is installed as a dev dependency:
+
+```json package.json
+{
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  },
+  "scripts": {
+    "build": "tailwindcss -i ./input.css -o ./style.css",
+    "watch": "tailwindcss -i ./input.css -o ./style.css --watch"
+  }
+}
+```
+
+### Build Process
+
+- **Development**: `npm run watch` - Watches for changes and rebuilds automatically
+- **Production**: `npm run build` - Compiles Tailwind utilities and custom CSS into `style.css`
+
+### Configuration
+
+The Tailwind configuration extends the default theme with custom colors:
+
+```javascript tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: 'class',
+  content: ['./*.html', './*.js'],
+  theme: {
+    extend: {
+      colors: {
+        accent: '#7a9cff',
+        alta:   '#ff4757',
+        media:  '#ffa502',
+        baja:   '#2ed573',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+<Info>
+**Dark Mode Strategy**: `darkMode: 'class'` means dark mode is activated by adding the `dark` class to the `<html>` element, rather than using media queries.
+</Info>
+
+### Content Sources
+
+Tailwind scans these files for class usage:
+- `*.html` - All HTML files in the root directory
+- `*.js` - All JavaScript files (for dynamically generated classes)
+
+## Color Palette
+
+<CardGroup cols={2}>
+  <Card title="Accent Color" icon="palette">
+    `#7a9cff` - Primary accent blue
+    
+    Used for buttons, links, borders, and interactive elements
+  </Card>
+  
+  <Card title="Priority Colors" icon="tag">
+    - **Alta**: `#ff4757` (Red) - High priority
+    - **Media**: `#ffa502` (Orange) - Medium priority  
+    - **Baja**: `#2ed573` (Green) - Low priority
+  </Card>
+</CardGroup>
+
+## Custom CSS (input.css)
+
+The `input.css` file contains Tailwind directives and custom component styles:
+
+```css input.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Estilos custom de tareas ── */
+.tarea {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  animation: entrar 0.3s ease;
+}
+.tarea:hover { background: #f3f4f6; border-color: #7a9cff; border-width: 2px; }
+.tarea:focus-within { border-color: #7a9cff; border-width: 2px; }
+.nombre { flex: 1; font-size: 1rem; cursor: pointer; color: #1f2937; }
+.categoria { font-size: 0.8rem; color: #6b7280; }
+.badge { font-size: 0.75rem; font-weight: bold; padding: 4px 12px; border-radius: 20px; }
+.alta  { background: #ff47571a; color: #ff4757; border: 1px solid #ff4757; }
+.media { background: #ffa5021a; color: #ffa502; border: 1px solid #ffa502; }
+.baja  { background: #2ed5731a; color: #2ed573; border: 1px solid #2ed573; }
+.btnEliminar { background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 1rem; padding: 4px 8px; border-radius: 4px; transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease; }
+.btnEliminar:hover { color: #ff4757; background: #ff47571a; transform: scale(1.15); }
+.btnEliminar:focus { outline: 2px solid #ff4757; outline-offset: 2px; }
+.tarea.completada { opacity: 0.6; }
+.tarea.completada .nombre { text-decoration: line-through; color: #9ca3af; }
+.active { background: #e0e7ff !important; color: #7a9cff !important; }
+```
+
+### Task Component Breakdown
+
+<Steps>
+  <Step title="Base Task Card (.tarea)">
+    - White background with subtle gray border
+    - Flexbox layout with 16px gap between elements
+    - Rounded corners (10px radius)
+    - Entrance animation on creation
+    - Hover effect: lighter background + accent border
+  </Step>
+  
+  <Step title="Task Name (.nombre)">
+    - Takes up remaining flex space (`flex: 1`)
+    - Clickable cursor to indicate interactivity
+    - Toggles completion when clicked
+  </Step>
+  
+  <Step title="Category Label (.categoria)">
+    - Smaller font size (0.8rem)
+    - Muted gray color
+  </Step>
+  
+  <Step title="Priority Badge (.badge)">
+    - Small pill-shaped badge
+    - Color-coded by priority (`.alta`, `.media`, `.baja`)
+    - Semi-transparent background with solid border
+  </Step>
+  
+  <Step title="Delete Button (.btnEliminar)">
+    - Transparent background initially
+    - Red hover state with scale transformation
+    - Focus outline for accessibility
+  </Step>
+  
+  <Step title="Completed State (.completada)">
+    - 60% opacity for the entire card
+    - Strikethrough text on task name
+    - Muted text color
+  </Step>
+</Steps>
+
+## Dark Mode Styles
+
+Dark mode variants are defined with the `.dark` prefix:
+
+```css Dark Mode Task Styles
+.dark .tarea { background: #243656; border-color: #2a4a7f; }
+.dark .tarea:hover { background: #1e2a4a; border-color: #7a9cff; }
+.dark .nombre { color: #ffffff; }
+.dark .categoria { color: #aaaaaa; }
+.dark .btnEliminar { color: #aaaaaa; }
+.dark .active { background: #0f3460 !important; color: #7a9cff !important; }
+```
+
+### Dark Mode Activation
+
+Dark mode is toggled by adding/removing the `dark` class on `<html>`:
+
+```javascript app.js:104-108
+function aplicarTema(oscuro) {
+    document.documentElement.classList.toggle('dark', oscuro);
+    btnTema.textContent = oscuro ? '🌙' : '☀️';
+    localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+}
+```
+
+<Tip>
+Tailwind automatically applies all `dark:` utility classes when the `dark` class is present on the root element.
+</Tip>
+
+## Animations
+
+### Entrance Animation
+
+Tasks slide in from above when created:
+
+```css Entrance Animation
+@keyframes entrar { 
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  } 
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  } 
+}
+```
+
+Applied to `.tarea` with `animation: entrar 0.3s ease;`
+
+### Transitions
+
+Smooth transitions on interactive elements:
+
+- **Task cards**: `transition: background 0.2s ease, border-color 0.2s ease;`
+- **Delete button**: `transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;`
+- **Form inputs**: `transition-all duration-200` (Tailwind utility)
+
+## Responsive Design
+
+Mobile-first responsive styles at the 768px breakpoint:
+
+```css Mobile Styles
+@media (max-width: 768px) {
+  body > div { flex-direction: column; padding: 0 16px; }
+  aside { width: auto !important; margin: 16px 0 !important; }
+  aside nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  main { padding: 16px 0; }
+}
+```
+
+### Mobile Adaptations
+
+- **Layout**: Sidebar moves above main content (column layout)
+- **Sidebar width**: Expands to full width
+- **Navigation**: Horizontal scrolling filter pills
+- **Spacing**: Reduced padding and margins
+
+## Tailwind Utilities in HTML
+
+The HTML uses extensive Tailwind utilities for layout and styling:
+
+<CodeGroup>
+```html Header
+<header class="bg-white dark:bg-[#243656] border-b border-gray-200 dark:border-[#2a4a7f] px-8 py-5">
+  <div class="relative flex items-center justify-center max-w-[1200px] mx-auto">
+    <h1 class="text-2xl font-bold">Mis Tareas</h1>
+    <button id="btnTema"
+      class="absolute right-0 text-xl w-9 h-9 flex items-center justify-center rounded-lg
+             bg-gray-100 dark:bg-[#1a1a2e] hover:bg-gray-200 dark:hover:bg-[#0f3460] transition-all duration-200">
+      🌙
+    </button>
+  </div>
+</header>
+```
+
+```html Form Inputs
+<input type="text" id="inputTarea" placeholder="Nueva tarea"
+  class="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-[#2a4a7f]
+         bg-white dark:bg-[#243656] text-gray-800 dark:text-white text-sm
+         placeholder-gray-400 dark:placeholder-[#aaaaaa] outline-none
+         focus:border-[#7a9cff] hover:border-[#7a9cff]/50 transition-all duration-200"/>
+```
+
+```html Add Button
+<button id="btnAnadir"
+  class="px-6 py-2.5 rounded-lg bg-[#7a9cff] text-[#1a1a2e] text-sm font-bold
+         hover:opacity-85 active:scale-95
+         focus:outline-none focus:ring-2 focus:ring-[#7a9cff] focus:ring-offset-2 focus:ring-offset-[#1a1a2e]
+         transition-all duration-200">
+  Añadir
+</button>
+```
+</CodeGroup>
+
+## CSS Architecture Summary
+
+<Steps>
+  <Step title="Tailwind Base Layer">
+    Normalizes browser defaults and provides base styles
+  </Step>
+  
+  <Step title="Custom Components">
+    Task cards, badges, and buttons with specific design requirements
+  </Step>
+  
+  <Step title="Tailwind Utilities">
+    Layout, spacing, colors, and responsive utilities applied in HTML
+  </Step>
+  
+  <Step title="Compiled Output">
+    All styles bundled into `style.css` for production use
+  </Step>
+</Steps>
+
+<Check>
+**Best Practice**: Custom component CSS is used only where Tailwind utilities would be repetitive or insufficient. Most styling is done inline with Tailwind classes for rapid development.
+</Check>

@@ -1,0 +1,85 @@
+---
+title: Searching Tasks
+description: Learn how to quickly find tasks using the search feature
+---
+
+## Overview
+
+Taskflow includes a powerful search feature that helps you quickly locate specific tasks by name. The search works in real-time as you type, instantly filtering your task list.
+
+## How to Search for Tasks
+
+<Steps>
+  <Step title="Locate the Search Input">
+    Find the **Buscar tarea** (Search task) input field below the task creation form. It's a full-width text box that spans across the main content area.
+  </Step>
+
+  <Step title="Start Typing">
+    Click on the search field and begin typing any part of the task name you're looking for. You don't need to press Enter or click a search button.
+  </Step>
+
+  <Step title="View Results Instantly">
+    As you type, Taskflow automatically filters your tasks in real-time. Tasks that match your search will remain visible, while non-matching tasks are hidden.
+  </Step>
+
+  <Step title="Clear the Search">
+    To return to viewing all tasks, simply delete your search text or clear the search field. All tasks will reappear immediately.
+  </Step>
+</Steps>
+
+## How Search Works
+
+### What Gets Searched
+
+The search function looks through **task names only**. It searches the main text of each task but does not search:
+- Categories
+- Priority levels
+- Completion status
+
+<Note>The search is case-insensitive, so searching for "ejercicio", "Ejercicio", or "EJERCICIO" will all find the same results.</Note>
+
+### Real-Time Filtering
+
+Unlike traditional search that requires clicking a button:
+- Results appear instantly as you type each character
+- Tasks are filtered dynamically without page reloads
+- You can see matches update with every keystroke
+
+### Partial Matches
+
+The search finds tasks containing your search term anywhere in the task name:
+- Searching **"hacer"** will find "**Hacer** ejercicio"
+- Searching **"ejercicio"** will find "Hacer **ejercicio**"
+- Searching **"cer eje"** will find "Ha**cer eje**rcicio"
+
+<Tip>You don't need to type the complete task name. Even a few characters can help you quickly narrow down your task list.</Tip>
+
+## Search Tips and Tricks
+
+### Quick Navigation
+
+- Use just 2-3 characters to quickly filter a long task list
+- Start with unique words to find specific tasks faster
+- Clear the search frequently to regain context of all your tasks
+
+### Combined with Filters
+
+Search works independently from sidebar filters:
+- You can filter by priority level AND search at the same time
+- This helps you find specific tasks within a priority category
+- Example: Filter for "Prioridad Alta" then search for "reunión" to find high-priority meeting tasks
+
+### Common Use Cases
+
+- **Finding a specific task**: Type a unique word from the task name
+- **Viewing related tasks**: Search for a common keyword (e.g., "proyecto" to see all project-related tasks)
+- **Quick checking**: Search to verify if you've already added a task
+
+<Note>If your search returns no results, all tasks will be hidden. This means no task names match your search term. Try using fewer or different characters.</Note>
+
+## Search Behavior
+
+- Search respects your current filter selection (if you're filtering by priority)
+- Search text is temporary - refreshing the page clears the search
+- Completed tasks can still be found using search
+- Tasks remain in their priority sections even when filtered by search

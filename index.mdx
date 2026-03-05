@@ -1,97 +1,111 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Welcome to Taskflow"
+description: "A simple and elegant task management application with priority-based organization"
 ---
 
-## Setting up
+<div style={{
+  background: 'linear-gradient(135deg, #020627 0%, #0f172a 100%)',
+  padding: '48px 32px',
+  borderRadius: '12px',
+  marginBottom: '32px',
+  border: '1px solid rgba(96,99,146,1)'
+}}>
+  <h1 style={{
+    fontSize: '48px',
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: '16px',
+    fontFamily: 'Inter'
+  }}>
+    Organize Your Tasks Effectively
+  </h1>
+  <p style={{
+    fontSize: '20px',
+    color: '#cfd0d2',
+    marginBottom: '24px',
+    lineHeight: '1.6'
+  }}>
+    Taskflow is a lightweight task management application that helps you organize, prioritize, and track your tasks with ease. Built with vanilla JavaScript and TailwindCSS.
+  </p>
+  <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
+    <a href="/quickstart" style={{
+      display: 'inline-block',
+      padding: '12px 24px',
+      background: '#238636',
+      color: '#ffffff',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '16px'
+    }}>
+      Get Started
+    </a>
+    <a href="https://github.com/santy2911/taskflow-project" style={{
+      display: 'inline-block',
+      padding: '12px 24px',
+      background: 'transparent',
+      color: '#ffffff',
+      border: '1px solid rgba(96,99,146,1)',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '16px'
+    }}>
+      View on GitHub
+    </a>
+  </div>
+</div>
 
-Get your documentation site up and running in minutes.
+## Key Features
+
+Taskflow provides everything you need to manage your tasks efficiently.
+
+<CardGroup cols={2}>
+  <Card title="Priority System" icon="signal" href="/features/priority-system">
+    Organize tasks by High, Medium, and Low priority levels
+  </Card>
+  <Card title="Smart Filtering" icon="filter" href="/guide/filtering-tasks">
+    Filter tasks by priority to focus on what matters most
+  </Card>
+  <Card title="Category Tags" icon="tags" href="/features/categories">
+    Categorize tasks for better organization
+  </Card>
+  <Card title="Dark Mode" icon="moon" href="/features/dark-mode">
+    Toggle between light and dark themes
+  </Card>
+  <Card title="Local Storage" icon="database" href="/features/local-storage">
+    Persistent storage keeps your tasks safe
+  </Card>
+  <Card title="Search & Find" icon="magnifying-glass" href="/guide/searching-tasks">
+    Quickly find tasks with real-time search
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+Get up and running with Taskflow in just a few minutes.
 
 <Card
-  title="Start here"
+  title="Quickstart Guide"
   icon="rocket"
   href="/quickstart"
   horizontal
 >
-  Follow our three step quickstart guide.
+  Open the application and start managing your tasks immediately
 </Card>
 
-## Make it yours
+## Explore the Documentation
 
-Design a docs site that looks great and empowers your users.
+Learn how to make the most of Taskflow's features.
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={3}>
+  <Card title="User Guide" icon="book-open" href="/guide/creating-tasks">
+    Learn how to create, manage, and complete tasks
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Features" icon="sparkles" href="/features/task-management">
+    Discover all the powerful features available
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Technical Docs" icon="code" href="/technical/architecture">
+    Understand the architecture and implementation
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+</CardGroup>

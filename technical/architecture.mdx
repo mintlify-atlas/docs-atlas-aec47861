@@ -1,0 +1,261 @@
+---
+title: Application Architecture
+description: Technical overview of Taskflow's vanilla JavaScript architecture and code organization
+---
+
+## Overview
+
+Taskflow is built with **vanilla JavaScript** - no frameworks or libraries required. The application uses direct DOM manipulation and native browser APIs to provide a lightweight, fast task management experience.
+
+### Key Characteristics
+
+- **Zero dependencies**: Pure JavaScript with no React, Vue, or other framework overhead
+- **Direct DOM manipulation**: Uses native `document.getElementById()`, `querySelector()`, and `createElement()`
+- **Event-driven architecture**: All interactions handled through addEventListener
+- **localStorage persistence**: Client-side data storage with JSON serialization
+- **TailwindCSS for styling**: Utility-first CSS framework (dev dependency only)
+
+## File Structure
+
+The application consists of three main files:
+
+```
+source/
+├── index.html       # HTML structure and Tailwind utility classes
+├── app.js           # All application logic (~136 lines)
+└── input.css        # Custom CSS and Tailwind directives
+```
+
+## Core Functions
+
+All application logic is contained in `app.js`. Here are the key functions:
+
+<AccordionGroup>
+  <Accordion title="guardarEnStorage() - Persist tasks to localStorage">
+    Saves the entire tasks array to localStorage as a JSON string.
+
+    ```javascript
+    function guardarEnStorage() {
+        localStorage.setItem('tareas', JSON.stringify(tareas));
+    }
+    ```
+
+    Called after every task modification (add, delete, complete).
+  </Accordion>
+
+  <Accordion title="actualizarContadores() - Update section headers with task counts">
+    Updates the count display in each priority section header.
+
+    ```javascript
+    function actualizarContadores() {
+        ['alta', 'media', 'baja'].forEach(function(prioridad) {
+            const seccion = document.getElementById('seccion-' + prioridad);
+            const cantidad = seccion.querySelectorAll('.tarea').length;
+            seccion.querySelector('h2').textContent = 'Prioridad ' + prioridad + ' (' + cantidad + ')';
+        });
+    }
+    ```
+
+    Iterates through each priority level and counts visible tasks using `querySelectorAll('.tarea').length`.
+  </Accordion>
+
+  <Accordion title="crearTareaElemento(t) - Create task DOM element">
+    Generates a complete task element with all interactive behaviors.
+
+    ```javascript
+    function crearTareaElemento(t) {
+        const tarea = document.createElement('div');
+        tarea.classList.add('tarea');
+        tarea.dataset.categoria = t.categoria;
+        tarea.dataset.prioridad = t.prioridad;
+
+        if (t.completada) tarea.classList.add('completada');
+
+        tarea.innerHTML = `
+            <div class="nombre">${t.texto}</div>
+            <div class="categoria">Categoría: ${t.categoria}</div>
+            <span class="badge ${t.prioridad}">${t.prioridad}</span>
+            <button class="btnEliminar">✕</button>`;
+
+        tarea.querySelector('.nombre').addEventListener('click', function() {
+            tarea.classList.toggle('completada');
+            const index = tareas.findIndex(x => x.id === t.id);
+            tareas[index].completada = !tareas[index].completada;
+            guardarEnStorage();
+        });
+
+        tarea.querySelector('.btnEliminar').addEventListener('click', function() {
+            tareas = tareas.filter(x => x.id !== t.id);
+            guardarEnStorage();
+            tarea.remove();
+            actualizarContadores();
+        });
+
+        return tarea;
+    }
+    ```
+
+    This function:
+    - Creates a `<div>` element with the `tarea` class
+    - Sets data attributes for filtering
+    - Builds inner HTML with task details
+    - Attaches click handlers for completion toggle and deletion
+    - Returns the fully configured element
+  </Accordion>
+
+  <Accordion title="aplicarTema(oscuro) - Apply dark/light theme">
+    Toggles dark mode using Tailwind's `dark:` class strategy.
+
+    ```javascript
+    function aplicarTema(oscuro) {
+        document.documentElement.classList.toggle('dark', oscuro);
+        btnTema.textContent = oscuro ? '🌙' : '☀️';
+        localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+    }
+    ```
+
+    - Adds/removes the `dark` class on `<html>`
+    - Updates button icon
+    - Persists theme preference to localStorage
+  </Accordion>
+
+  <Accordion title="cargarTareas() - Initialize app with saved/default tasks">
+    Loads tasks from localStorage or seeds default data on first run.
+
+    ```javascript
+    function cargarTareas() {
+        const guardadas = localStorage.getItem('tareas');
+
+        tareas = guardadas ? JSON.parse(guardadas) : [
+            { id: 1, texto: 'Hacer ejercicio',  categoria: 'Personal',    prioridad: 'alta',  completada: false },
+            { id: 2, texto: 'Estudiar',          categoria: 'Estudios',    prioridad: 'alta',  completada: false },
+            { id: 3, texto: 'Revisar gastos',    categoria: 'Personal',    prioridad: 'media', completada: false },
+            { id: 4, texto: 'Jugar videojuegos', categoria: 'Videojuegos', prioridad: 'baja',  completada: false }
+        ];
+
+        if (!guardadas) guardarEnStorage();
+
+        tareas.forEach(function(t) {
+            document.getElementById('seccion-' + t.prioridad).appendChild(crearTareaElemento(t));
+        });
+
+        actualizarContadores();
+    }
+    ```
+
+    Called once on page load to populate the UI.
+  </Accordion>
+</AccordionGroup>
+
+## Task Data Structure
+
+Each task is a JavaScript object with the following properties:
+
+```javascript
+{
+  id: 1,                      // Unique identifier (timestamp)
+  texto: 'Hacer ejercicio',   // Task description
+  categoria: 'Personal',      // Category label
+  prioridad: 'alta',          // Priority: 'alta', 'media', or 'baja'
+  completada: false           // Completion status
+}
+```
+
+The entire task list is stored as an array:
+
+```javascript
+let tareas = [];
+```
+
+## Event Handling Approach
+
+### DOM Element References
+
+All interactive elements are captured once on page load:
+
+```javascript
+const inputTarea     = document.getElementById('inputTarea');
+const inputCategoria = document.getElementById('inputCategoria');
+const selectPrioridad = document.getElementById('selectPrioridad');
+const btnAnadir      = document.getElementById('btnAnadir');
+const inputBusqueda  = document.getElementById('inputBusqueda');
+const btnTema        = document.getElementById('btnTema');
+```
+
+### Event Listeners
+
+The application uses standard `addEventListener` for all interactions:
+
+<CodeGroup>
+```javascript Add Task Button
+btnAnadir.addEventListener('click', function() {
+    const texto = inputTarea.value.trim();
+    const categoria = inputCategoria.value.trim() || 'General';
+    if (texto === '') return;
+
+    const t = { id: Date.now(), texto, categoria, prioridad: selectPrioridad.value, completada: false };
+    tareas.push(t);
+    guardarEnStorage();
+
+    const tarea = crearTareaElemento(t);
+    document.getElementById('seccion-' + t.prioridad).appendChild(tarea);
+    actualizarContadores();
+
+    inputTarea.value = '';
+    inputCategoria.value = '';
+});
+```
+
+```javascript Enter Key Support
+inputTarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') btnAnadir.click();
+});
+```
+
+```javascript Search/Filter Tasks
+inputBusqueda.addEventListener('input', function() {
+    const busqueda = inputBusqueda.value.toLowerCase().trim();
+    document.querySelectorAll('.tarea').forEach(function(tarea) {
+        const nombre = tarea.querySelector('.nombre').textContent.toLowerCase();
+        tarea.style.display = nombre.includes(busqueda) ? 'flex' : 'none';
+    });
+});
+```
+
+```javascript Sidebar Priority Filters
+const enlaces = document.querySelectorAll('aside nav a');
+enlaces.forEach(function(enlace) {
+    enlace.addEventListener('click', function(e) {
+        e.preventDefault();
+        enlaces.forEach(a => a.classList.remove('active'));
+        enlace.classList.add('active');
+
+        const filtro = enlace.dataset.filtro;
+        document.querySelectorAll('.tarea').forEach(function(tarea) {
+            tarea.style.display = (filtro === 'todas' || tarea.dataset.prioridad === filtro) ? 'flex' : 'none';
+        });
+    });
+});
+```
+</CodeGroup>
+
+## Initialization Flow
+
+1. **DOM Content Loaded**: The script runs when HTML parsing completes
+2. **DOM References**: Capture all interactive elements
+3. **Theme Applied**: Load saved theme preference (`aplicarTema()`)
+4. **Tasks Loaded**: Retrieve from localStorage or use defaults (`cargarTareas()`)
+5. **UI Rendered**: Each task element created and appended to appropriate section
+6. **Counters Updated**: Section headers show correct task counts
+7. **Event Listeners**: All interactions are now active
+
+<Note>
+The entire initialization happens synchronously - no async/await or promises needed since localStorage access is synchronous.
+</Note>
+
+## Performance Considerations
+
+- **Minimal DOM queries**: Elements referenced once and reused
+- **Efficient filtering**: Uses CSS `display` property instead of removing/re-adding elements
+- **No virtual DOM**: Direct manipulation is fast for this application size
+- **localStorage limits**: Browser storage typically capped at 5-10MB

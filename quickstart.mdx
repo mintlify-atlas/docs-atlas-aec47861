@@ -1,80 +1,199 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get started with Taskflow in minutes
 ---
 
-## Get started in three steps
+## Getting Started
 
-Get your documentation site running locally and make your first customization.
+Taskflow is a static HTML application that runs directly in your browser. No installation, no dependencies, no account creation - just open and start organizing your tasks.
 
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+<Steps>
+  <Step title="Open the Application">
+    Simply open the `index.html` file in any modern web browser:
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    ```bash
+    # Using a web browser directly
+    open index.html
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    # Or serve it locally with a simple HTTP server
+    python -m http.server 8000
+    # Then visit http://localhost:8000
+    ```
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    <Tip>
+    For the best experience, use a modern browser like Chrome, Firefox, Safari, or Edge. The application uses localStorage, which is supported in all modern browsers.
+    </Tip>
+  </Step>
+  
+  <Step title="Create Your First Task">
+    When you first open Taskflow, you'll see some example tasks. Let's create your own:
+    
+    1. Click on the **Nueva tarea** input field at the top
+    2. Type your task name (e.g., "Complete project documentation")
+    3. Add a category in the **Categoría** field (e.g., "Work")
+    4. Select a priority from the dropdown: **Alta**, **Media**, or **Baja**
+    5. Click the **Añadir** button or press **Enter**
+    
+    Your task will appear in the corresponding priority section!
+    
+    <Info>
+    If you don't specify a category, Taskflow automatically assigns "General" as the default category.
+    </Info>
+  </Step>
+  
+  <Step title="Understand the Priority System">
+    Taskflow organizes tasks into three priority levels:
+    
+    - **🔴 Prioridad Alta (High)** - Urgent tasks that need immediate attention
+    - **🟠 Prioridad Media (Medium)** - Important tasks to complete soon
+    - **🟢 Prioridad Baja (Low)** - Tasks you can do when you have time
+    
+    Each task displays a colored badge matching its priority:
+    
+    ```javascript
+    // Priority values in the code
+    selectPrioridad.value // 'alta', 'media', or 'baja'
+    ```
+    
+    Tasks are automatically grouped by priority in separate sections, each with a counter showing how many tasks are in that priority level.
+  </Step>
+  
+  <Step title="Complete and Delete Tasks">
+    Managing your tasks is intuitive:
+    
+    **To mark a task as complete:**
+    - Click on the task name
+    - The task will get a strikethrough style indicating completion
+    - Click again to unmark it
+    
+    **To delete a task:**
+    - Click the **✕** button on the right side of the task
+    - The task is removed immediately and permanently
+    
+    ```javascript
+    // Tasks are saved automatically after every action
+    function guardarEnStorage() {
+        localStorage.setItem('tareas', JSON.stringify(tareas));
+    }
+    ```
+    
+    <Tip>
+    All changes are saved automatically to your browser's localStorage. You can close the page and come back anytime - your tasks will still be there!
+    </Tip>
+  </Step>
+  
+  <Step title="Use Filters and Search">
+    Taskflow provides two ways to find tasks quickly:
+    
+    **Sidebar Filters:**
+    - Click **Todas** to see all tasks
+    - Click **🔴 Prioridad Alta** to see only high-priority tasks
+    - Click **🟠 Prioridad Media** to see only medium-priority tasks
+    - Click **🟢 Prioridad Baja** to see only low-priority tasks
+    
+    **Search Bar:**
+    - Type in the **Buscar tarea** field
+    - Tasks are filtered in real-time as you type
+    - The search matches against task names
+    
+    ```javascript
+    // Real-time search implementation
+    inputBusqueda.addEventListener('input', function() {
+        const busqueda = inputBusqueda.value.toLowerCase().trim();
+        document.querySelectorAll('.tarea').forEach(function(tarea) {
+            const nombre = tarea.querySelector('.nombre').textContent.toLowerCase();
+            tarea.style.display = nombre.includes(busqueda) ? 'flex' : 'none';
+        });
+    });
+    ```
+  </Step>
+  
+  <Step title="Enable Dark Mode">
+    Toggle between light and dark themes:
+    
+    1. Click the **🌙** button in the top-right corner of the header
+    2. The interface switches to dark mode with a custom color scheme
+    3. Click again (now shows **☀️**) to return to light mode
+    
+    Your theme preference is saved automatically and persists across sessions:
+    
+    ```javascript
+    // Theme is saved to localStorage
+    function aplicarTema(oscuro) {
+        document.documentElement.classList.toggle('dark', oscuro);
+        btnTema.textContent = oscuro ? '🌙' : '☀️';
+        localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+    }
+    ```
+    
+    <Tip>
+    Dark mode uses a carefully crafted color palette defined in the Tailwind config, with accent color #7a9cff for an easy-on-the-eyes experience.
+    </Tip>
+  </Step>
+</Steps>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+## Understanding Data Persistence
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+Taskflow stores all your data in the browser's localStorage:
 
-### Step 3: Go live
+```javascript
+// Task array structure
+tareas = [
+    { 
+        id: 1, 
+        texto: 'Hacer ejercicio',  
+        categoria: 'Personal',    
+        prioridad: 'alta',  
+        completada: false 
+    }
+];
+```
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+**What this means:**
+- Your tasks are private and stay on your device
+- No internet connection required after initial load
+- Data persists across browser sessions
+- Clearing browser data will delete your tasks
+- Tasks are not synced across devices
 
-## Next steps
+<Warning>
+If you clear your browser's cache or local storage, your tasks will be deleted. Consider exporting important tasks or taking screenshots for backup.
+</Warning>
 
-Now that you have your docs running, explore these key features:
+## Default Tasks
+
+When you first open Taskflow (or if localStorage is empty), you'll see these example tasks:
+
+- **Hacer ejercicio** (Personal, Alta)
+- **Estudiar** (Estudios, Alta)
+- **Revisar gastos** (Personal, Media)
+- **Jugar videojuegos** (Videojuegos, Baja)
+
+Feel free to delete these and add your own tasks!
+
+## Keyboard Shortcuts
+
+Speed up your workflow with keyboard shortcuts:
+
+- **Enter** - When focused on the task input field, pressing Enter adds the task (same as clicking Añadir)
+
+```javascript
+// Enter key support
+inputTarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') btnAnadir.click();
+});
+```
+
+## Next Steps
+
+Now that you know the basics:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Explore Features" icon="compass" href="/features/task-management">
+    Learn about advanced features and customization options
+  </Card>
+  
+  <Card title="Technical Reference" icon="code" href="/technical/architecture">
+    Want to understand how Taskflow works? Check out the technical reference
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

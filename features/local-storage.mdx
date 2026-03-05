@@ -1,0 +1,224 @@
+---
+title: Local Storage
+description: Automatic data persistence using browser localStorage for tasks and preferences
+---
+
+## Overview
+
+Taskflow uses the browser's localStorage API to automatically save all tasks and user preferences. This ensures that data persists across browser sessions without requiring a backend server or database.
+
+## Saving Tasks
+
+The `guardarEnStorage()` function saves the entire tasks array to localStorage:
+
+```javascript app.js
+function guardarEnStorage() {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
+```
+
+<Info>
+  `JSON.stringify()` converts the JavaScript array into a JSON string that can be stored in localStorage.
+</Info>
+
+This function is called automatically whenever:
+- A new task is created
+- A task is marked as complete/incomplete
+- A task is deleted
+
+### Example: Saving on Task Creation
+
+```javascript app.js
+btnAnadir.addEventListener('click', function() {
+    const texto = inputTarea.value.trim();
+    const categoria = inputCategoria.value.trim() || 'General';
+    if (texto === '') return;
+
+    const t = { id: Date.now(), texto, categoria, prioridad: selectPrioridad.value, completada: false };
+    tareas.push(t);
+    guardarEnStorage();  // Automatically saves to localStorage
+
+    // ...
+});
+```
+
+### Example: Saving on Task Completion
+
+```javascript app.js
+tarea.querySelector('.nombre').addEventListener('click', function() {
+    tarea.classList.toggle('completada');
+    const index = tareas.findIndex(x => x.id === t.id);
+    tareas[index].completada = !tareas[index].completada;
+    guardarEnStorage();  // Saves updated completion status
+});
+```
+
+### Example: Saving on Task Deletion
+
+```javascript app.js
+tarea.querySelector('.btnEliminar').addEventListener('click', function() {
+    tareas = tareas.filter(x => x.id !== t.id);
+    guardarEnStorage();  // Saves after removing task
+    tarea.remove();
+    actualizarContadores();
+});
+```
+
+## Loading Tasks
+
+The `cargarTareas()` function retrieves tasks from localStorage on page load:
+
+```javascript app.js
+function cargarTareas() {
+    const guardadas = localStorage.getItem('tareas');
+
+    tareas = guardadas ? JSON.parse(guardadas) : [
+        { id: 1, texto: 'Hacer ejercicio',  categoria: 'Personal',    prioridad: 'alta',  completada: false },
+        { id: 2, texto: 'Estudiar',          categoria: 'Estudios',    prioridad: 'alta',  completada: false },
+        { id: 3, texto: 'Revisar gastos',    categoria: 'Personal',    prioridad: 'media', completada: false },
+        { id: 4, texto: 'Jugar videojuegos', categoria: 'Videojuegos', prioridad: 'baja',  completada: false }
+    ];
+
+    if (!guardadas) guardarEnStorage();
+
+    tareas.forEach(function(t) {
+        document.getElementById('seccion-' + t.prioridad).appendChild(crearTareaElemento(t));
+    });
+
+    actualizarContadores();
+}
+
+cargarTareas();
+```
+
+<Note>
+  If no saved tasks are found, the application loads a set of default example tasks and immediately saves them to localStorage.
+</Note>
+
+## Default Tasks
+
+The first time a user opens the application, these default tasks are loaded:
+
+```javascript app.js
+[
+    { id: 1, texto: 'Hacer ejercicio',  categoria: 'Personal',    prioridad: 'alta',  completada: false },
+    { id: 2, texto: 'Estudiar',          categoria: 'Estudios',    prioridad: 'alta',  completada: false },
+    { id: 3, texto: 'Revisar gastos',    categoria: 'Personal',    prioridad: 'media', completada: false },
+    { id: 4, texto: 'Jugar videojuegos', categoria: 'Videojuegos', prioridad: 'baja',  completada: false }
+]
+```
+
+<Tip>
+  Default tasks help new users understand how the application works without starting from an empty state.
+</Tip>
+
+## Storing Theme Preference
+
+In addition to tasks, localStorage also persists the user's theme preference:
+
+```javascript app.js
+function aplicarTema(oscuro) {
+    document.documentElement.classList.toggle('dark', oscuro);
+    btnTema.textContent = oscuro ? '🌙' : '☀️';
+    localStorage.setItem('tema', oscuro ? 'dark' : 'light');
+}
+```
+
+### Loading Theme Preference
+
+```javascript app.js
+aplicarTema(localStorage.getItem('tema') === 'dark');
+```
+
+## LocalStorage Structure
+
+Taskflow uses two localStorage keys:
+
+| Key       | Value Type | Purpose                          |
+|-----------|------------|----------------------------------|
+| `tareas`  | JSON Array | All task objects                 |
+| `tema`    | String     | Theme preference ('dark'/'light')|
+
+### Example Task Storage
+
+```json
+[
+  {
+    "id": 1709654321000,
+    "texto": "Hacer ejercicio",
+    "categoria": "Personal",
+    "prioridad": "alta",
+    "completada": false
+  },
+  {
+    "id": 1709654322000,
+    "texto": "Estudiar JavaScript",
+    "categoria": "Estudios",
+    "prioridad": "media",
+    "completada": true
+  }
+]
+```
+
+## Data Persistence Behavior
+
+<CodeGroup>
+
+```javascript Save on Create
+btnAnadir.addEventListener('click', function() {
+    // ... task creation logic ...
+    tareas.push(t);
+    guardarEnStorage();  // ✅ Immediate save
+});
+```
+
+```javascript Save on Complete
+tarea.querySelector('.nombre').addEventListener('click', function() {
+    tarea.classList.toggle('completada');
+    const index = tareas.findIndex(x => x.id === t.id);
+    tareas[index].completada = !tareas[index].completada;
+    guardarEnStorage();  // ✅ Immediate save
+});
+```
+
+```javascript Save on Delete
+tarea.querySelector('.btnEliminar').addEventListener('click', function() {
+    tareas = tareas.filter(x => x.id !== t.id);
+    guardarEnStorage();  // ✅ Immediate save
+    tarea.remove();
+    actualizarContadores();
+});
+```
+
+</CodeGroup>
+
+## Browser Compatibility
+
+LocalStorage is supported by all modern browsers:
+- Chrome 4+
+- Firefox 3.5+
+- Safari 4+
+- Edge (all versions)
+- Opera 10.5+
+
+<Note>
+  LocalStorage has a storage limit of approximately 5-10 MB per domain, which is more than sufficient for typical task management use.
+</Note>
+
+## Data Recovery
+
+Since data is stored in the browser's localStorage:
+- Tasks persist after closing and reopening the browser
+- Tasks persist after system restarts
+- Tasks are isolated per domain
+- Clearing browser data will delete all tasks
+
+<Tip>
+  Users should be aware that localStorage data can be cleared by browser privacy tools or when clearing browsing data.
+</Tip>
+
+## Related Features
+
+- [Task Management](/features/task-management) - All task operations trigger automatic saves
+- [Dark Mode](/features/dark-mode) - Theme preference is also stored in localStorage
+- [Categories](/features/categories) - Category data persists with tasks

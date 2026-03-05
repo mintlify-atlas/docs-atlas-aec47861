@@ -1,0 +1,143 @@
+---
+title: Categories
+description: Organize tasks with custom categories for better task management
+---
+
+## Overview
+
+Taskflow allows users to organize tasks using custom categories. Categories provide an additional layer of organization beyond priority levels, making it easier to group related tasks together.
+
+## How Categories Work
+
+Categories are stored as a property in each task object:
+
+```javascript
+const t = {
+  id: Date.now(),
+  texto: 'Hacer ejercicio',
+  categoria: 'Personal',    // Category property
+  prioridad: 'alta',
+  completada: false
+};
+```
+
+## Default Category
+
+If users don't specify a category when creating a task, it automatically defaults to "General":
+
+```javascript app.js
+btnAnadir.addEventListener('click', function() {
+    const texto = inputTarea.value.trim();
+    const categoria = inputCategoria.value.trim() || 'General';  // Defaults to 'General'
+    if (texto === '') return;
+
+    const t = { id: Date.now(), texto, categoria, prioridad: selectPrioridad.value, completada: false };
+    tareas.push(t);
+    guardarEnStorage();
+
+    const tarea = crearTareaElemento(t);
+    document.getElementById('seccion-' + t.prioridad).appendChild(tarea);
+    actualizarContadores();
+
+    inputTarea.value = '';
+    inputCategoria.value = '';
+});
+```
+
+<Info>
+  The `|| 'General'` operator ensures that empty or whitespace-only category inputs are replaced with "General".
+</Info>
+
+## Category Input Field
+
+Users enter categories through a dedicated input field in the task creation form:
+
+```html index.html
+<input type="text" id="inputCategoria" placeholder="Categoría"
+  class="flex-1 px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-[#2a4a7f]
+         bg-white dark:bg-[#243656] text-gray-800 dark:text-white text-sm
+         placeholder-gray-400 dark:placeholder-[#aaaaaa] outline-none
+         focus:border-[#7a9cff] hover:border-[#7a9cff]/50 transition-all duration-200"/>
+```
+
+## Category Display
+
+Categories are prominently displayed on each task card:
+
+```javascript app.js
+tarea.innerHTML = `
+    <div class="nombre">${t.texto}</div>
+    <div class="categoria">Categoría: ${t.categoria}</div>
+    <span class="badge ${t.prioridad}">${t.prioridad}</span>
+    <button class="btnEliminar">✕</button>`;
+```
+
+The category text is styled with a subdued color to differentiate it from the task name:
+
+```css input.css
+.categoria { font-size: 0.8rem; color: #6b7280; }
+.dark .categoria { color: #aaaaaa; }
+```
+
+<Note>
+  Category text adapts to dark mode with a lighter shade for better readability.
+</Note>
+
+## Data Attributes
+
+Each task element stores its category as a data attribute for potential filtering functionality:
+
+```javascript app.js
+function crearTareaElemento(t) {
+    const tarea = document.createElement('div');
+    tarea.classList.add('tarea');
+    tarea.dataset.categoria = t.categoria;  // Category stored as data attribute
+    tarea.dataset.prioridad = t.prioridad;
+
+    if (t.completada) tarea.classList.add('completada');
+    // ...
+}
+```
+
+## Example Categories
+
+The default tasks loaded on first use demonstrate various category examples:
+
+```javascript app.js
+tareas = guardadas ? JSON.parse(guardadas) : [
+    { id: 1, texto: 'Hacer ejercicio',  categoria: 'Personal',    prioridad: 'alta',  completada: false },
+    { id: 2, texto: 'Estudiar',          categoria: 'Estudios',    prioridad: 'alta',  completada: false },
+    { id: 3, texto: 'Revisar gastos',    categoria: 'Personal',    prioridad: 'media', completada: false },
+    { id: 4, texto: 'Jugar videojuegos', categoria: 'Videojuegos', prioridad: 'baja',  completada: false }
+];
+```
+
+<Tip>
+  Users can create any category name they want, providing unlimited flexibility for organizing tasks according to their personal workflow.
+</Tip>
+
+## Category Persistence
+
+Categories are automatically saved to localStorage along with all other task data:
+
+```javascript app.js
+function guardarEnStorage() {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
+```
+
+When tasks are loaded from storage, categories are preserved:
+
+```javascript app.js
+function cargarTareas() {
+    const guardadas = localStorage.getItem('tareas');
+    tareas = guardadas ? JSON.parse(guardadas) : [/* default tasks */];
+    // ...
+}
+```
+
+## Related Features
+
+- [Task Management](/features/task-management) - Core task creation functionality
+- [Priority System](/features/priority-system) - Organize tasks by priority
+- [Local Storage](/features/local-storage) - How categories persist across sessions

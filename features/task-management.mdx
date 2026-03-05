@@ -1,0 +1,143 @@
+---
+title: Task Management
+description: Core task management functionality for creating, completing, and deleting tasks
+---
+
+## Overview
+
+Taskflow's core task management system allows users to create, complete, and delete tasks with a simple and intuitive interface. Each task contains essential information including a unique ID, text description, category, priority level, and completion status.
+
+## Task Object Structure
+
+Every task in Taskflow is represented as a JavaScript object with the following properties:
+
+```javascript
+const t = {
+  id: Date.now(),
+  texto: 'Hacer ejercicio',
+  categoria: 'Personal',
+  prioridad: 'alta',
+  completada: false
+};
+```
+
+<Info>
+  The `id` is generated using `Date.now()` to ensure each task has a unique timestamp-based identifier.
+</Info>
+
+## Creating Tasks
+
+Tasks are created through the form interface and added to the tasks array. Here's how the add button event listener works:
+
+```javascript app.js
+btnAnadir.addEventListener('click', function() {
+    const texto = inputTarea.value.trim();
+    const categoria = inputCategoria.value.trim() || 'General';
+    if (texto === '') return;
+
+    const t = { id: Date.now(), texto, categoria, prioridad: selectPrioridad.value, completada: false };
+    tareas.push(t);
+    guardarEnStorage();
+
+    const tarea = crearTareaElemento(t);
+    document.getElementById('seccion-' + t.prioridad).appendChild(tarea);
+    actualizarContadores();
+
+    inputTarea.value = '';
+    inputCategoria.value = '';
+});
+```
+
+<Note>
+  If no category is provided, the task defaults to "General". Empty task text is not allowed.
+</Note>
+
+### Keyboard Shortcut
+
+Users can press Enter in the task input field to quickly add tasks:
+
+```javascript app.js
+inputTarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') btnAnadir.click();
+});
+```
+
+## Rendering Tasks
+
+The `crearTareaElemento()` function generates the HTML structure for each task:
+
+```javascript app.js
+function crearTareaElemento(t) {
+    const tarea = document.createElement('div');
+    tarea.classList.add('tarea');
+    tarea.dataset.categoria = t.categoria;
+    tarea.dataset.prioridad = t.prioridad;
+
+    if (t.completada) tarea.classList.add('completada');
+
+    tarea.innerHTML = `
+        <div class="nombre">${t.texto}</div>
+        <div class="categoria">Categoría: ${t.categoria}</div>
+        <span class="badge ${t.prioridad}">${t.prioridad}</span>
+        <button class="btnEliminar">✕</button>`;
+
+    // Event listeners for complete and delete
+    tarea.querySelector('.nombre').addEventListener('click', function() {
+        tarea.classList.toggle('completada');
+        const index = tareas.findIndex(x => x.id === t.id);
+        tareas[index].completada = !tareas[index].completada;
+        guardarEnStorage();
+    });
+
+    tarea.querySelector('.btnEliminar').addEventListener('click', function() {
+        tareas = tareas.filter(x => x.id !== t.id);
+        guardarEnStorage();
+        tarea.remove();
+        actualizarContadores();
+    });
+
+    return tarea;
+}
+```
+
+## Completing Tasks
+
+Users can mark tasks as complete by clicking on the task name. This toggles the `completada` class and updates the task's completion status:
+
+```javascript
+tarea.querySelector('.nombre').addEventListener('click', function() {
+    tarea.classList.toggle('completada');
+    const index = tareas.findIndex(x => x.id === t.id);
+    tareas[index].completada = !tareas[index].completada;
+    guardarEnStorage();
+});
+```
+
+<Tip>
+  Completed tasks are displayed with reduced opacity and a line-through style to visually distinguish them from active tasks.
+</Tip>
+
+## Deleting Tasks
+
+The delete button removes tasks from both the DOM and the tasks array:
+
+```javascript app.js
+tarea.querySelector('.btnEliminar').addEventListener('click', function() {
+    tareas = tareas.filter(x => x.id !== t.id);
+    guardarEnStorage();
+    tarea.remove();
+    actualizarContadores();
+});
+```
+
+The deletion process:
+1. Filters the task out of the `tareas` array using its unique ID
+2. Saves the updated array to localStorage
+3. Removes the task element from the DOM
+4. Updates the priority section counters
+
+## Related Features
+
+- [Priority System](/features/priority-system) - Learn how tasks are organized by priority
+- [Categories](/features/categories) - Understand task categorization
+- [Local Storage](/features/local-storage) - See how tasks persist across sessions

@@ -1,0 +1,89 @@
+---
+title: Introduction
+description: Welcome to Taskflow - A simple, elegant task management application
+---
+
+## What is Taskflow?
+
+Taskflow is a lightweight, browser-based task management application built with vanilla JavaScript and styled with Tailwind CSS. It provides an intuitive interface for organizing your daily tasks with a priority-based system, making it easy to focus on what matters most.
+
+Designed as a static HTML application, Taskflow runs entirely in your browser with no backend required. All your tasks are automatically saved to your browser's local storage, ensuring your data persists across sessions.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Priority System" icon="signal">
+    Organize tasks with three priority levels: Alta (High), Media (Medium), and Baja (Low). Each priority is color-coded for quick visual recognition.
+  </Card>
+  
+  <Card title="Category Organization" icon="folder">
+    Group tasks by custom categories like Personal, Estudios, or Videojuegos. Create unlimited categories to match your workflow.
+  </Card>
+  
+  <Card title="Dark Mode" icon="moon">
+    Built-in dark mode with a custom color scheme that's easy on the eyes. Your theme preference is saved automatically.
+  </Card>
+  
+  <Card title="Local Storage" icon="database">
+    All tasks are saved to localStorage automatically. No account required, no server needed - your data stays private on your device.
+  </Card>
+  
+  <Card title="Real-time Search" icon="magnifying-glass">
+    Instantly filter tasks as you type. The search works across all task names to help you find what you need quickly.
+  </Card>
+  
+  <Card title="Smart Filters" icon="filter">
+    Use the sidebar to filter tasks by priority level, or view all tasks at once. Perfect for focusing on urgent items.
+  </Card>
+</CardGroup>
+
+## Use Cases
+
+Taskflow is perfect for:
+
+- **Personal Task Management** - Track daily chores, errands, and personal goals
+- **Study Organization** - Keep track of assignments, reading lists, and exam preparation
+- **Work Planning** - Organize project tasks, meetings, and deadlines
+- **Hobby Tracking** - Manage creative projects, gaming goals, or learning activities
+
+<Note>
+Taskflow uses a Spanish interface ("Mis Tareas") but works perfectly for managing tasks in any language. The task content, categories, and search all support any text you enter.
+</Note>
+
+## Technology Stack
+
+Taskflow is built with:
+
+- **Vanilla JavaScript** - Pure JavaScript with no frameworks or dependencies
+- **Tailwind CSS** - Utility-first CSS framework for styling
+- **HTML5 LocalStorage API** - For persistent data storage
+- **Custom Dark Mode** - Class-based theme switching with custom color palette
+
+## Architecture
+
+The application follows a simple, straightforward architecture:
+
+```javascript
+// Task data structure
+{
+  id: 1,
+  texto: 'Task name',
+  categoria: 'Category',
+  prioridad: 'alta', // 'alta', 'media', or 'baja'
+  completada: false
+}
+```
+
+Tasks are stored in a JavaScript array and synchronized with localStorage on every change, ensuring data persistence without requiring a database.
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Learn how to start using Taskflow in minutes
+  </Card>
+  
+  <Card title="Features" icon="sparkles" href="/features/task-management">
+    Explore all features in detail
+  </Card>
+</CardGroup>

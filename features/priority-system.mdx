@@ -1,0 +1,143 @@
+---
+title: Priority System
+description: Organize tasks by priority levels with High, Medium, and Low classifications
+---
+
+## Overview
+
+Taskflow uses a three-tier priority system to help users organize their tasks by urgency and importance. Tasks are automatically sorted into **High (Alta)**, **Medium (Media)**, and **Low (Baja)** priority sections.
+
+## Priority Levels
+
+The application supports three priority levels, each with its own color coding:
+
+| Priority | Spanish | Color Code | Visual Indicator |
+|----------|---------|------------|------------------|
+| High     | alta    | `#ff4757`  | 🔴 Red           |
+| Medium   | media   | `#ffa502`  | 🟠 Orange        |
+| Low      | baja    | `#2ed573`  | 🟢 Green         |
+
+<Info>
+  Priority colors are defined in the Tailwind configuration and consistently applied across the application.
+</Info>
+
+## Color Configuration
+
+Priority colors are defined in the Tailwind config for consistent theming:
+
+```javascript tailwind.config.js
+module.exports = {
+  darkMode: 'class',
+  content: ['./*.html', './*.js'],
+  theme: {
+    extend: {
+      colors: {
+        accent: '#7a9cff',
+        alta:   '#ff4757',
+        media:  '#ffa502',
+        baja:   '#2ed573',
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+## Priority Sections
+
+Each priority level has its own dedicated section in the UI:
+
+```html index.html
+<section id="seccion-alta" class="mb-7">
+  <h2 class="text-xs uppercase text-gray-400 dark:text-[#aaaaaa] mb-2.5 tracking-wider">Prioridad Alta</h2>
+</section>
+
+<section id="seccion-media" class="mb-7">
+  <h2 class="text-xs uppercase text-gray-400 dark:text-[#aaaaaa] mb-2.5 tracking-wider">Prioridad Media</h2>
+</section>
+
+<section id="seccion-baja" class="mb-7">
+  <h2 class="text-xs uppercase text-gray-400 dark:text-[#aaaaaa] mb-2.5 tracking-wider">Prioridad Baja</h2>
+</section>
+```
+
+## Priority Badge Styling
+
+Each task displays a colored badge indicating its priority level:
+
+```css input.css
+.badge { font-size: 0.75rem; font-weight: bold; padding: 4px 12px; border-radius: 20px; }
+.alta  { background: #ff47571a; color: #ff4757; border: 1px solid #ff4757; }
+.media { background: #ffa5021a; color: #ffa502; border: 1px solid #ffa502; }
+.baja  { background: #2ed5731a; color: #2ed573; border: 1px solid #2ed573; }
+```
+
+<Note>
+  Badge backgrounds use transparency (`1a` suffix) to create subtle, non-intrusive color indicators.
+</Note>
+
+## Task Counter System
+
+The `actualizarContadores()` function dynamically updates the task count for each priority section:
+
+```javascript app.js
+function actualizarContadores() {
+    ['alta', 'media', 'baja'].forEach(function(prioridad) {
+        const seccion = document.getElementById('seccion-' + prioridad);
+        const cantidad = seccion.querySelectorAll('.tarea').length;
+        seccion.querySelector('h2').textContent = 'Prioridad ' + prioridad + ' (' + cantidad + ')';
+    });
+}
+```
+
+This function:
+1. Iterates through all three priority levels
+2. Counts the number of tasks in each section
+3. Updates the section heading with the current count
+
+<Tip>
+  Task counters update automatically whenever tasks are added, deleted, or moved between priority sections.
+</Tip>
+
+## Priority Selection
+
+When creating a new task, users select the priority from a dropdown menu:
+
+```html index.html
+<select id="selectPrioridad"
+  class="px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-[#2a4a7f]
+         bg-white dark:bg-[#243656] text-gray-800 dark:text-white text-sm outline-none cursor-pointer
+         focus:border-[#7a9cff] hover:border-[#7a9cff]/50 transition-all duration-200">
+  <option value="alta">Alta</option>
+  <option value="media">Media</option>
+  <option value="baja">Baja</option>
+</select>
+```
+
+## Sidebar Filtering
+
+Users can filter tasks by priority using the sidebar navigation:
+
+```html index.html
+<a href="#" data-filtro="alta"
+  class="block no-underline text-gray-700 dark:text-white px-2.5 py-2 rounded-md text-sm
+         hover:bg-gray-100 dark:hover:bg-[#0f3460] hover:text-[#7a9cff] transition-all duration-200">
+  🔴Prioridad Alta
+</a>
+<a href="#" data-filtro="media"
+  class="block no-underline text-gray-700 dark:text-white px-2.5 py-2 rounded-md text-sm
+         hover:bg-gray-100 dark:hover:bg-[#0f3460] hover:text-[#7a9cff] transition-all duration-200">
+  🟠Prioridad Media
+</a>
+<a href="#" data-filtro="baja"
+  class="block no-underline text-gray-700 dark:text-white px-2.5 py-2 rounded-md text-sm
+         hover:bg-gray-100 dark:hover:bg-[#0f3460] hover:text-[#7a9cff] transition-all duration-200">
+  🟢Prioridad Baja
+</a>
+```
+
+## Related Features
+
+- [Task Management](/features/task-management) - Core task creation and management
+- [Categories](/features/categories) - Additional organization with categories
+- [Dark Mode](/features/dark-mode) - Priority colors adapt to dark theme
